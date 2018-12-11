@@ -16,12 +16,13 @@
 
 package ch.qos.logback.core.rolling.shutdown;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ShutdownHookUtil {
 
-    public static void registerShutdownHook(@NotNull RollingPolicyShutdownListener listener, @Nullable ShutdownHookType shutdownHookType) {
+    public static void registerShutdownHook(@Nonnull RollingPolicyShutdownListener listener,
+            @Nullable ShutdownHookType shutdownHookType) {
 
         if (shutdownHookType == null) {
 
@@ -32,18 +33,18 @@ public class ShutdownHookUtil {
 
             case SERVLET_CONTEXT:
 
-                RollingPolicyContextListener.registerShutdownListener( listener );
+                RollingPolicyContextListener.registerShutdownListener(listener);
                 break;
 
             case JVM_SHUTDOWN_HOOK:
 
-                Runtime.getRuntime().addShutdownHook( new Thread( new RollingPolicyJVMListener( listener ) ) );
+                Runtime.getRuntime().addShutdownHook(new Thread(new RollingPolicyJVMListener(listener)));
                 break;
 
             case NONE:
             default:
 
-                //Do nothing
+                // Do nothing
                 break;
         }
     }

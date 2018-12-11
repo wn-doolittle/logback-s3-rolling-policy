@@ -17,17 +17,19 @@
 package ch.qos.logback.core.rolling.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class IdentifierUtil {
 
-    @NotNull
+    @Nonnull
     public static String getIdentifier() {
 
         String identifier;
@@ -36,7 +38,7 @@ public class IdentifierUtil {
         // 1. Try AWS EC2 Instance ID
         //
 
-        identifier = getContentOfWebpage( "http://instance-data/latest/meta-data/instance-id" );
+        identifier = getContentOfWebpage("http://instance-data/latest/meta-data/instance-id");
 
         if (identifier != null) {
 
@@ -66,30 +68,29 @@ public class IdentifierUtil {
 
         try {
 
-            URL url = new URL( location );
+            URL url = new URL(location);
 
             URLConnection con = url.openConnection();
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();
-            encoding = encoding == null? "UTF-8": encoding;
+            encoding = encoding == null ? "UTF-8" : encoding;
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buf = new byte[8192];
             int len = 0;
 
-            while ((len = in.read( buf )) != -1) {
+            while ((len = in.read(buf)) != -1) {
 
-                baos.write( buf, 0, len );
+                baos.write(buf, 0, len);
             }
 
-            String body = new String( baos.toByteArray(), encoding );
+            String body = new String(baos.toByteArray(), encoding);
 
             if (body.trim().length() > 0) {
 
                 return body.trim();
             }
-        }
-        catch (Exception e) {
+        } catch (IOException e) {
 
             return null;
         }
@@ -106,15 +107,14 @@ public class IdentifierUtil {
 
             if (hostname != null) {
 
-                hostname = hostname.replaceAll( "[^a-zA-Z0-9.]+", "" ).trim();
+                hostname = hostname.replaceAll("[^a-zA-Z0-9.]+", "").trim();
             }
 
             if (hostname != null && hostname.length() > 0) {
 
                 return hostname;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
             return null;
         }
